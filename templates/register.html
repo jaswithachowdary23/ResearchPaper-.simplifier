@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Research Paper Simplifier</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="register-container">
+
+    <div class="register-card">
+
+        <!-- FIXED IMAGE (remove double .png if wrong) -->
+        <img src="{{ url_for('static', filename='logo23.png.png') }}" alt="Logo" class="logo">
+
+        <h1>Create Account</h1>
+        <p>Join our AI-powered platform and simplify every research paper with ease.</p>
+
+        <!-- FIXED FORM -->
+        <form action="{{ url_for('login') }}"></form>
+
+            <input type="text" placeholder="Full Name" required>
+
+            <input type="email" placeholder="Email Address" required>
+
+            <input type="password" placeholder="Password" required>
+
+            <input type="password" placeholder="Confirm Password" required>
+
+            <button type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+
+            <!-- FIXED LINK -->
+            <a href="{{ url_for('login') }}">
+                Login
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
