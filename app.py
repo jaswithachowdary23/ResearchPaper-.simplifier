@@ -1,7 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for
-
+import PyPDF2
+import os
+import google.generativeai as genai
 app = Flask(__name__)
 
+# Configure Gemini
+genai.configure(api_key="YOUR-API-KEY")
+
+# Load Gemini Model
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+uploaded_text = ""
 # ----------------------------
 # Home Page
 # ----------------------------
@@ -36,29 +45,110 @@ def login():
 def dashboard():
     return render_template("dashboard.html")
 
+@app.route("/upload", methods=["POST"])
+def upload():
 
+    global uploaded_text
+
+    pdf = request.files["paper"]
+
+    # Save PDF in uploads folder
+    pdf_path = os.path.join("uploads", "paper.pdf")
+    pdf.save(pdf_path)
+
+    # Read PDF from uploads folder
+    reader = PyPDF2.PdfReader(pdf_path)
+
+    uploaded_text = ""
+
+    for page in reader.pages:
+        text = page.extract_text()
+
+        if text:
+            uploaded_text += text
+
+    return redirect(url_for("summary"))
 # ----------------------------
 # Summary
 # ----------------------------
 @app.route("/summary")
 def summary():
-    return render_template("summary.html")
 
+    global uploaded_text
+
+    if uploaded_text == "":
+        return "Please upload a PDF first."
+
+    response = model.generate_content(
+        f"""
+        Summarize this research paper in simple language.
+
+        {uploaded_text}
+        """
+    )
+
+    return render_template(
+        "summary.html",
+        summary=response.text
+    )
 
 # ----------------------------
 # Insights
 # ----------------------------
 @app.route("/insights")
 def insights():
-    return render_template("insights.html")
 
+    global uploaded_text
+
+    response = model.generate_content(f"""
+Give important insights from this paper.
+
+Include:
+
+Main contribution
+
+Strengths
+
+Weaknesses
+
+Future scope
+
+Real-world applications
+
+Research Paper:
+{uploaded_text}
+""")
+
+    return render_template(
+        "insights.html",
+        insights=response.text
+    )
 
 # ----------------------------
 # Flashcards
 # ----------------------------
 @app.route("/flashcards")
 def flashcards():
-    return render_template("flashcards.html")
+
+    global uploaded_text
+
+    response = model.generate_content(f"""
+Create 10 flashcards from this research paper.
+
+Format:
+
+Q: Question
+
+A: Answer
+
+Research Paper:
+{uploaded_text}
+""")
+
+    return render_template(
+        "flashcards.html",
+        flashcards=response.text
+    )
 
 
 # ----------------------------
@@ -66,8 +156,34 @@ def flashcards():
 # ----------------------------
 @app.route("/quiz")
 def quiz():
-    return render_template("quiz.html")
 
+    global uploaded_text
+
+    response = model.generate_content(f"""
+Create 10 multiple choice questions.
+
+Each question should have:
+
+Question
+
+A)
+
+B)
+
+C)
+
+D)
+
+Correct Answer
+
+Research Paper:
+{uploaded_text}
+""")
+
+    return render_template(
+        "quiz.html",
+        quiz=response.text
+    )
 
 # ----------------------------
 # AI Chat
@@ -82,7 +198,22 @@ def chatbot():
 # ----------------------------
 @app.route("/keywords")
 def keywords():
-    return render_template("keywords.html")
+
+    global uploaded_text
+
+    response = model.generate_content(f"""
+Extract the 20 most important keywords.
+
+For each keyword give one-line meaning.
+
+Research Paper:
+{uploaded_text}
+""")
+
+    return render_template(
+        "keywords.html",
+        keywords=response.text
+    )
 
 
 # ----------------------------
@@ -90,7 +221,33 @@ def keywords():
 # ----------------------------
 @app.route("/explain")
 def explain():
-    return render_template("explain.html")
+
+    global uploaded_text
+
+    response = model.generate_content(f"""
+Explain this research paper as if teaching a beginner.
+
+Use simple English.
+
+Research Paper:
+{uploaded_text}
+""")
+
+    return render_template(
+        "explain.html",
+        explanation=response.text
+    )
+
+
+# ----------------------------
+# Gemini AI Test
+# ----------------------------
+@app.route("/test-ai")
+def test_ai():
+    response = model.generate_content(
+        "Say hello to my Research Paper Simplifier project in one sentence."
+    )
+    return response.text
 
 
 # ----------------------------

@@ -4,18 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+
 <div class="dashboard">
+
     <h1>Research Paper Simplifier</h1>
+
     <h3>WELCOME</h3>
+
     <p>Upload your research paper and explore it with AI.</p>
 
-</style>
+    <!-- Upload Form -->
     <div class="upload-box">
-        <input type="file" accept=".pdf">
-        <button>Upload Paper</button>
+
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+
+            <input type="file" name="paper" accept=".pdf" required>
+
+            <button type="submit">
+                Upload Paper
+            </button>
+
+        </form>
+
     </div>
 
     <h2>AI Research Toolkit</h2>
@@ -23,31 +38,38 @@
     <div class="tool-grid">
 
         <a href="{{ url_for('summary') }}" class="tool-card">
-            📄 <h4>Summary</h4>
+            📄
+            <h4>Summary</h4>
         </a>
 
         <a href="{{ url_for('insights') }}" class="tool-card">
-            💡 <h4>Insights</h4>
+            💡
+            <h4>Insights</h4>
         </a>
 
         <a href="{{ url_for('flashcards') }}" class="tool-card">
-            🧠 <h4>Flashcards</h4>
+            🧠
+            <h4>Flashcards</h4>
         </a>
 
         <a href="{{ url_for('quiz') }}" class="tool-card">
-            ❓ <h4>Quiz</h4>
+            ❓
+            <h4>Quiz</h4>
         </a>
 
         <a href="{{ url_for('chatbot') }}" class="tool-card">
-            🤖 <h4>AI Chat</h4>
+            🤖
+            <h4>AI Chat</h4>
         </a>
 
         <a href="{{ url_for('keywords') }}" class="tool-card">
-            🔑 <h4>Keywords</h4>
+            🔑
+            <h4>Keywords</h4>
         </a>
 
         <a href="{{ url_for('explain') }}" class="tool-card">
-            🎓 <h4>Explain</h4>
+            🎓
+            <h4>Explain</h4>
         </a>
 
     </div>
